@@ -1,10 +1,10 @@
-FROM ruby:2.4
+FROM ruby:2.2
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 
 # Set timezone
-RUN echo "US/Eastern" > /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
+RUN echo "Europe/Berlin" > /etc/timezone && dpkg-reconfigure --frontend noninteractive tzdata
 
 RUN apt-get update -y && \
   apt-get install -y unzip xvfb \
@@ -16,17 +16,12 @@ RUN apt-get update -y && \
 
 WORKDIR /usr/src/app/
 
-# install required gem files for Capybara
-COPY ./Gemfile /usr/src/app/
-RUN gem install bundler
-RUN bundle install
-
 # install chrome
 RUN apt-get update -y && \
 	wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
 	dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
 
 # install chromedriver and place it ib path
-RUN wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip && \ 
+RUN wget https://chromedriver.storage.googleapis.com/2.34/chromedriver_linux64.zip && \ 
 	unzip chromedriver_linux64.zip && \
 	mv chromedriver /usr/local/bundle/bin/
